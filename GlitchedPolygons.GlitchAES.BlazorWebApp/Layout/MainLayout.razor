@@ -1,0 +1,45 @@
+﻿@inherits LayoutComponentBase
+
+@inject IJSRuntime JSRuntime
+
+@if (darkTheme)
+{
+    <link href="css/dark.css"
+          rel="stylesheet" />
+}
+
+<div class="page">
+
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+
+        <div id="topnavbar"
+             class="top-row px-4">
+
+            <a href="https://glitchedpolygons.com"
+               target="_blank">
+                Copyright © @DateTime.UtcNow.Year, Raphael Beck
+            </a>
+
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+
+    </main>
+
+</div>
+
+@code
+{
+    private bool darkTheme = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        darkTheme = await JSRuntime.InvokeAsync<bool>("UserHasDarkMode");
+    }
+}
