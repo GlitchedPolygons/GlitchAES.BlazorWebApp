@@ -1,4 +1,5 @@
-﻿using GlitchedPolygons.ExtensionMethods;
+﻿using System;
+using GlitchedPolygons.ExtensionMethods;
 
 namespace GlitchedPolygons.GlitchAES.BlazorWebApp.ExtensionMethods;
 
