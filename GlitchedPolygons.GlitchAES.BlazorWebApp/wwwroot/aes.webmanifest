@@ -1,7 +1,7 @@
 {
   "name": "GlitchAES",
   "short_name": "GlitchAES",
-  "description": "Zero-knowledge symmetric encryption PWA (static and works offline) using AES-GCM.",
+  "description": "GlitchAES (say: \"glitches\") is a web-based (zero-knowledge, static client-side only) GUI that wraps AES-GCM.",
   "icons": [
     {
       "src": "icon-192.png",
