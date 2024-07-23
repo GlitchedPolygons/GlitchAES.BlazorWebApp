@@ -292,11 +292,10 @@
 
             Span<byte> plaintextBytes = encryptionPlaintext.UTF8GetBytes();
             Span<byte> ciphertextBytes = new byte[aesGcm.GetOutputSize(plaintextBytes.Length)];
-            Span<byte> tag = stackalloc byte[Constants.AesGcm.TAG_SIZE_BYTES];
 
             int n = aesGcm.ProcessBytes(plaintextBytes, ciphertextBytes);
 
-            aesGcm.DoFinal(tag);
+            aesGcm.DoFinal(ciphertextBytes[n..]);
 
             Span<byte> resultBytes = new byte[Constants.AesGcm.NONCE_SIZE_BYTES + ciphertextBytes.Length];
 
@@ -304,9 +303,6 @@
 
             nonceBytes.CopyTo(resultBytes[offset..]);
             offset += Constants.AesGcm.NONCE_SIZE_BYTES;
-            
-            tag.CopyTo(resultBytes[offset..]);
-            offset += Constants.AesGcm.TAG_SIZE_BYTES;
 
             ciphertextBytes.CopyTo(resultBytes[offset..]);
 
@@ -352,7 +348,7 @@
             encryptionCiphertextBytes[..Constants.AesGcm.NONCE_SIZE_BYTES]
                 .CopyTo(nonceBytes);
 
-            Span<byte> ciphertextBytes = encryptionCiphertextBytes[(Constants.AesGcm.NONCE_SIZE_BYTES + Constants.AesGcm.TAG_SIZE_BYTES)..];
+            Span<byte> ciphertextBytes = encryptionCiphertextBytes[Constants.AesGcm.NONCE_SIZE_BYTES..];
 
             AesEngine aesEngine = new();
             GcmBlockCipher cipher = new(aesEngine);
