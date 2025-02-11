@@ -111,9 +111,9 @@ function InitKeygen()
             paintCanvas.width = windowDimensions.width - 50;
             paintCanvas.height = 256;
         }
-        else if (windowDimensions.width < 1250)
+        else if (windowDimensions.width < 1337)
         {
-            paintCanvas.width = windowDimensions.width - 290;
+            paintCanvas.width = windowDimensions.width - 314;
             paintCanvas.height = 384;
         }
         else

@@ -117,3 +117,9 @@ code {
     display: block;
     margin-top: 0.5rem;
 }
+
+@media (min-width: 384px) {
+    .sidebar {
+        min-width: 256px !important;
+    }
+}

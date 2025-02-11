@@ -1,0 +1,156 @@
+﻿@page "/hex-base64-converter"
+@using GlitchedPolygons.ExtensionMethods
+@inject IJSRuntime JSRuntime
+
+<PageTitle>
+    GlitchAES - Hex/Base64 converter
+</PageTitle>
+
+<h1>
+    Hex / Base64 Converter
+</h1>
+
+<br/>
+
+<p>
+    It's sometimes necessary to convert between byte array encodings such as passing from a Base64-encoded chunk of
+    bytes to its hex-encoded string representation (or vice-versa).
+</p>
+
+<p>
+    With this utility you can convert between these two formats easily.
+</p>
+
+<div class="form-group">
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" @bind="base64URL" id="checkboxBase64URL">
+        <label class="form-check-label" for="checkboxBase64URL" title="Check this box if Base64-URL encoding should be used instead of standard Base64.">
+            Base64-URL
+        </label>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" @bind="lowercase" id="checkboxLowercase">
+        <label class="form-check-label" for="checkboxLowercase" title="Check this box if you want output hex-encoded strings to be all lowercase.">
+            Lowercase hex-strings
+        </label>
+    </div>
+
+    <label class="col-form-label"
+           for="inputText">
+        Input
+    </label>
+
+    <textarea type="text"
+              rows="3"
+              @bind="input"
+              id="inputText"
+              class="form-control"
+              onClick="this.select();"
+              style="max-width: 1024px"
+              placeholder="Paste your Base64-encoded string to convert to a hex-encoded string (or the other way around)"></textarea>
+
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 1.5rem; margin-bottom: 8px;">
+    <button class="btn btn-primary stretch-when-narrow"
+            id="buttonConvertBase64ToHex"
+            style="padding-left: 24px; padding-right: 24px;"
+            @onclick="ConvertBase64ToHex">
+        Convert Base64 → Hex-String
+    </button>
+
+    <button class="btn btn-primary stretch-when-narrow"
+            id="buttonConvertHexToBase64"
+            style="padding-left: 24px; padding-right: 24px; min-width: 162px;"
+            @onclick="ConvertHexToBase64">
+        Convert Hex-String → Base64
+    </button>
+</div>
+
+<div class="form-group">
+
+    <label class="col-form-label"
+           for="outputText">
+        Output
+    </label>
+
+    <textarea type="text"
+              rows="3"
+              id="outputText"
+              @bind="output"
+              class="form-control"
+              onClick="this.select();"
+              style="max-width: 1024px"></textarea>
+
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 1.5rem; margin-bottom: 64px;">
+    <button class="btn btn-primary stretch-when-narrow"
+            id="copyButton"
+            style="padding-left: 24px; padding-right: 24px;"
+            @onclick="CopyOutput">
+        Copy output
+    </button>
+</div>
+
+<br/>
+<br/>
+
+@code {
+
+    private string input;
+    private string output;
+    private bool base64URL;
+    private bool lowercase;
+
+    private void ConvertBase64ToHex()
+    {
+        try
+        {
+            if (base64URL)
+            {
+                output = Convert.ToHexString(input.ToBytesFromBase64Url());
+            }
+            else
+            {
+                output = Convert.ToHexString(input.ToBytesFromBase64());
+            }
+
+            if (lowercase)
+            {
+                output = output.ToLowerInvariant();
+            }
+        }
+        catch (Exception e)
+        {
+            output = $"ERROR: Failed to convert input string from Base64{(base64URL ? "-URL" : "")} to a hex-encoded string. Thrown exception: {e.ToString()}";
+        }
+    }
+
+    private void ConvertHexToBase64()
+    {
+        try
+        {
+            if (base64URL)
+            {
+                output = Convert.FromHexString(input).ToBase64UrlString();
+            }
+            else
+            {
+                output = Convert.FromHexString(input).ToBase64String();
+            }
+        }
+        catch (Exception e)
+        {
+            output = $"ERROR: Failed to convert the allegedly hex-encoded input string into Base64{(base64URL ? "-URL" : "")}. Thrown exception: {e.ToString()}";
+        }
+    }
+
+    private async Task CopyOutput()
+    {
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", output);
+    }
+
+}
